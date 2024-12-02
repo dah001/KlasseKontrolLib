@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using KlasseLib;
+using MSTest.TestFramework;
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+
+namespace KlasseUnitTestProject;
 
 [TestClass]
 public class SensorTest
