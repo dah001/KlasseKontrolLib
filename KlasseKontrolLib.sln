@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlasseWebService", "KlasseWebService\KlasseWebService.csproj", "{C7927B94-4FCF-4D8D-9292-D1ED53137478}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlasseUnitTestProject", "KlasseUnitTestProject\KlasseUnitTestProject.csproj", "{14D860A4-61BF-4BEC-8F2F-51BBCA745599}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B321FBC9-D674-439F-98F9-B0E7B089E497} = {B321FBC9-D674-439F-98F9-B0E7B089E497}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
