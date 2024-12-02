@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KlasseLib
 {
-    public class Sensor
+    public abstract class Sensor
     {
         public int Id { get; }
         public string SensorType { get; }
