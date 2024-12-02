@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlasseKontrolLib", "KlasseKontrolLib\KlasseKontrolLib.csproj", "{B05AF7CF-1D1E-4A07-9369-EE06A65F93C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Classroom.Test", "Classroom.Test\Classroom.Test.csproj", "{44609BA1-3472-4609-BF46-D9F7C119FD86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorClass.Test", "SensorClass.Test\SensorClass.Test.csproj", "{CA530BF4-2439-4E84-8E41-2D2FDC23EBA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{B05AF7CF-1D1E-4A07-9369-EE06A65F93C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B05AF7CF-1D1E-4A07-9369-EE06A65F93C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B05AF7CF-1D1E-4A07-9369-EE06A65F93C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44609BA1-3472-4609-BF46-D9F7C119FD86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44609BA1-3472-4609-BF46-D9F7C119FD86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44609BA1-3472-4609-BF46-D9F7C119FD86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44609BA1-3472-4609-BF46-D9F7C119FD86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA530BF4-2439-4E84-8E41-2D2FDC23EBA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA530BF4-2439-4E84-8E41-2D2FDC23EBA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA530BF4-2439-4E84-8E41-2D2FDC23EBA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA530BF4-2439-4E84-8E41-2D2FDC23EBA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
