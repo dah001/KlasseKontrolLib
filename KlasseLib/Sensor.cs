@@ -20,5 +20,10 @@ namespace KlasseLib
             CurrentValue = currentValue;
             LastMeasurement = lastMeasurement;
         }
+
+        public override string ToString()
+        {
+            return $"{{{nameof(Id)}={Id.ToString()}, {nameof(SensorType)}={SensorType}, {nameof(CurrentValue)}={CurrentValue.ToString()}, {nameof(LastMeasurement)}={LastMeasurement.ToString()}}}";
+        }
     }
 }
