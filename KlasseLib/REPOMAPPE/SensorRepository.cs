@@ -1,6 +1,6 @@
 namespace KlasseLib.REPOMAPPE;
 
-public class SensorRepository
+public class SensorRepository : ISensorRepository
 {
     private readonly List<Sensor> _sensors = new List<Sensor>();
     
@@ -25,7 +25,27 @@ public class SensorRepository
         return null;
     }
     
+    public Sensor UpdateSensor(int id, double newValue)
+    {
+        Sensor sensor = GetSensorById(id);
+        if (sensor == null)
+        {
+            throw new ArgumentNullException(nameof(sensor));
+        }
+        sensor.CurrentValue = newValue;
+        sensor.LastMeasurement = DateTime.Now;
+        return sensor;
+    }
     
-    
+    public Sensor DeleteSensor (int id)
+    {
+        Sensor sensor = GetSensorById(id);
+        if (sensor == null)
+        {
+            throw new KeyNotFoundException(nameof(sensor));
+        }
+        _sensors.Remove(sensor);
+        return sensor;
+    }
   
 }
