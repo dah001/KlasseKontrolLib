@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlasseLib", "KlasseLib\KlasseLib.csproj", "{B321FBC9-D674-439F-98F9-B0E7B089E497}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KlasseLib", "KlasseLib\KlasseLib.csproj", "{B321FBC9-D674-439F-98F9-B0E7B089E497}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlasseWebService", "KlasseWebService\KlasseWebService.csproj", "{C7927B94-4FCF-4D8D-9292-D1ED53137478}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KlasseWebService", "KlasseWebService\KlasseWebService.csproj", "{C7927B94-4FCF-4D8D-9292-D1ED53137478}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlasseTestProject", "KlasseTestProject\KlasseTestProject.csproj", "{6751E0CB-D42D-4081-9B3E-93DE321EED9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KlasseTestProject", "KlasseTestProject\KlasseTestProject.csproj", "{6751E0CB-D42D-4081-9B3E-93DE321EED9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassRoomTest", "ClassRoomTest\ClassRoomTest.csproj", "{9FD334AD-C33B-42C5-83AB-FD57C7210F41}"
 EndProject

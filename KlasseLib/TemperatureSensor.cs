@@ -8,5 +8,8 @@ public class TemperatureSensor : Sensor
         : base(id, sensorType, currentValue, lastMeasurement) // Call the base class constructor
     {
         // You can add additional initialization specific to TemperatureSensor if needed
+
+
+
     }
 }
