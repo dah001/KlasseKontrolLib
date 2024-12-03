@@ -8,10 +8,10 @@ namespace KlasseLib
 {
     public abstract class Sensor
     {
-        public int Id { get; }
-        public string SensorType { get; }
-        public double CurrentValue { get; }
-        public DateTime LastMeasurement { get; }
+        public int Id { get; set; }
+        public string SensorType { get; set; }
+        public double CurrentValue { get; set; }
+        public DateTime LastMeasurement { get; set; }
 
         public Sensor(int id, string sensorType, double currentValue, DateTime lastMeasurement)
         {

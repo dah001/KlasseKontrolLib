@@ -46,7 +46,8 @@ public class Classroom
         Console.WriteLine($"Session stopped for class {ClassID}.");
     }
 
-
-
-
+    public override string ToString()
+    {
+        return $"{{{nameof(ClassID)}={ClassID.ToString()}, {nameof(TeacherName)}={TeacherName}, {nameof(StudentCount)}={StudentCount.ToString()}, {nameof(SessionActive)}={SessionActive.ToString()}}}";
+    }
 }
