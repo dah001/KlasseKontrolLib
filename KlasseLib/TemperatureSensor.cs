@@ -1,6 +1,6 @@
 namespace KlasseLib;
 
-public class TemperatureSensor : Sensor 
+public class   TemperatureSensor : Sensor 
 
 {
     // Constructor for TemperatureSensor
