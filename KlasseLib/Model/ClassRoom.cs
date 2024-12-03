@@ -1,6 +1,7 @@
 namespace KlasseLib;
 
 public class Classroom
+
 {
     public string ClassID { get; set; }
     public string TeacherName { get; set; }
