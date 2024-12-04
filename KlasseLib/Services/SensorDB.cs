@@ -1,42 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
+using Microsoft.Data.SqlClient;
 
-
-
-namespace KlasseLib.KlasseKontrolRepository
+namespace KlasseLib.KlasseKontrolServices
 {
-    public class SensorDB(ISensorDB.ISqlDatabaseConnection sqlDatabaseConnection) : ISensorDB
+    public class SensorDB:ISensorDB
     {
-        private const string ConnectionString = "Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test_thread;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        private const string ConnectionString = "Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;";
 
         // Add a sensor to the database
-        public void AddSensor(Sensor sensor)
+        public void AddSensor(string sensorType, double? temperatureValue, double? soundValue, DateTime lastMeasurement)
         {
-            if (sensor == null)
-                throw new ArgumentNullException(nameof(sensor));
-
             using (var connection = new SqlConnection(ConnectionString))
             {
-                const string query = "INSERT INTO Sensors (SensorType, CurrentValue, LastMeasurement) VALUES (@SensorType, @CurrentValue, @LastMeasurement)";
+                const string query = @"
+                    INSERT INTO Sensors (SensorType, TemperatureValue, SoundValue, LastMeasurement)
+                    VALUES (@SensorType, @TemperatureValue, @SoundValue, @LastMeasurement)";
 
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@SensorType", sensor.SensorType);
-                    command.Parameters.AddWithValue("@CurrentValue", sensor.CurrentValue);
-                    command.Parameters.AddWithValue("@LastMeasurement", sensor.LastMeasurement);
+                    command.Parameters.AddWithValue("@SensorType", sensorType);
+                    command.Parameters.AddWithValue("@TemperatureValue", (object)temperatureValue ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@SoundValue", (object)soundValue ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@LastMeasurement", lastMeasurement);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
 
-            Console.WriteLine($"Sensor with ID {sensor.Id} added to the database.");
+            Console.WriteLine("Sensor added to the database.");
         }
 
         // Retrieve a sensor by ID from the database
-        public Sensor GetSensorById(int id)
+        public void GetSensorById(int id)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -52,32 +47,33 @@ namespace KlasseLib.KlasseKontrolRepository
                     {
                         if (reader.Read())
                         {
-                            return new Sensor
-                            {
-                                Id = reader.GetInt32(0),
-                                SensorType = reader.GetString(1),
-                                CurrentValue = reader.GetDouble(2),
-                                LastMeasurement = reader.GetDateTime(3)
-                            };
+                            Console.WriteLine($"ID: {reader["Id"]}, Type: {reader["SensorType"]}, " +
+                                              $"Temperature: {reader["TemperatureValue"]}, Sound: {reader["SoundValue"]}, " +
+                                              $"LastMeasurement: {reader["LastMeasurement"]}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Sensor with ID {id} not found.");
                         }
                     }
                 }
             }
-
-            Console.WriteLine($"Sensor with ID {id} not found.");
-            return null;
         }
 
-        // Update a sensor's value and last measurement in the database
-        public Sensor UpdateSensor(int id, double newValue)
+        // Update a sensor's values and last measurement in the database
+        public void UpdateSensor(int id, double? newTemperatureValue, double? newSoundValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
-                const string query = "UPDATE Sensors SET CurrentValue = @CurrentValue, LastMeasurement = @LastMeasurement WHERE Id = @Id";
+                const string query = @"
+                    UPDATE Sensors
+                    SET TemperatureValue = @TemperatureValue, SoundValue = @SoundValue, LastMeasurement = @LastMeasurement
+                    WHERE Id = @Id";
 
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@CurrentValue", newValue);
+                    command.Parameters.AddWithValue("@TemperatureValue", (object)newTemperatureValue ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@SoundValue", (object)newSoundValue ?? DBNull.Value);
                     command.Parameters.AddWithValue("@LastMeasurement", DateTime.Now);
                     command.Parameters.AddWithValue("@Id", id);
 
@@ -87,25 +83,18 @@ namespace KlasseLib.KlasseKontrolRepository
                     if (rowsAffected > 0)
                     {
                         Console.WriteLine($"Sensor with ID {id} updated successfully.");
-                        return GetSensorById(id);
                     }
                     else
                     {
                         Console.WriteLine($"Sensor with ID {id} not found.");
-                        return null;
                     }
                 }
             }
         }
 
         // Delete a sensor by ID from the database
-        public Sensor DeleteSensor(int id)
+        public void DeleteSensor(int id)
         {
-            var sensorToDelete = GetSensorById(id);
-
-            if (sensorToDelete == null)
-                throw new KeyNotFoundException($"Sensor with ID {id} not found.");
-
             using (var connection = new SqlConnection(ConnectionString))
             {
                 const string query = "DELETE FROM Sensors WHERE Id = @Id";
@@ -115,21 +104,18 @@ namespace KlasseLib.KlasseKontrolRepository
                     command.Parameters.AddWithValue("@Id", id);
 
                     connection.Open();
-                    command.ExecuteNonQuery();
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Sensor with ID {id} deleted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Sensor with ID {id} not found.");
+                    }
                 }
             }
-
-            Console.WriteLine($"Sensor with ID {id} deleted successfully.");
-            return sensorToDelete;
         }
-    }
-
-    // Example model class for Sensor
-    public class Sensor
-    {
-        public int Id { get; set; }
-        public string SensorType { get; set; }
-        public double CurrentValue { get; set; }
-        public DateTime LastMeasurement { get; set; }
     }
 }

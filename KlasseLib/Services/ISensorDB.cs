@@ -1,26 +1,19 @@
-using System.Data.SqlClient;
+using System;
 
-namespace KlasseLib.KlasseKontrolRepository
+namespace KlasseLib.KlasseKontrolServices
 {
     public interface ISensorDB
     {
-        public interface ISqlDatabaseConnection
-        {
-            SqlCommand CreateCommand(string commandText);
-            // Eventuelle andre nødvendige metoder som Open, Close, etc.
-        }
+        // Add a sensor to the database
+        void AddSensor(string sensorType, double? temperatureValue, double? soundValue, DateTime lastMeasurement);
 
-        // Metode til at tilføje en sensor til databasen
-        void AddSensor(Sensor sensor);
+        // Retrieve a sensor by ID from the database
+        void GetSensorById(int id);
 
-        // Metode til at hente en sensor ved ID fra databasen
-        Sensor GetSensorById(int id);
+        // Update a sensor's values and last measurement in the database
+        void UpdateSensor(int id, double? newTemperatureValue, double? newSoundValue);
 
-        // Metode til at opdatere en sensors værdi og tidsstempel
-        Sensor UpdateSensor(int id, double newValue);
-
-        // Metode til at slette en sensor fra databasen
-        Sensor DeleteSensor(int id);
+        // Delete a sensor by ID from the database
+        void DeleteSensor(int id);
     }
 }
-
