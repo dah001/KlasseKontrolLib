@@ -2,6 +2,7 @@ using System;
 using Moq;
 using System.Data.SqlClient;
 using KlasseLib.KlasseKontrolRepository;
+using KlasseLib.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KlasseTestProject.Services

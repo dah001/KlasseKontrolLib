@@ -1,4 +1,5 @@
 using System.Data.SqlClient;
+using KlasseLib.Services;
 
 namespace KlasseLib.KlasseKontrolRepository;
 
@@ -243,6 +244,31 @@ public class DB_ClassRoom: IClassRoom
             {
                 Console.WriteLine($"Error while storing session data: {ex.Message}");
             }
+        }
+
+        public List<Classroom> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Classroom GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Classroom Add(Classroom classroom)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(int id, Classroom classroom)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(int id)
+        {
+            throw new NotImplementedException();
         }
 }
 

@@ -1,8 +1,15 @@
+using KlasseLib.KlasseKontrolRepository;
+using KlasseLib.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Register DB_ClassRoom as a singleton service
+builder.Services.AddSingleton<IClassRoom, DB_ClassRoom>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
