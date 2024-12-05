@@ -52,7 +52,7 @@ namespace KlasseTestProject.Services
             Assert.AreEqual("Mr. Green", classroom.TeacherName);
             Assert.AreEqual(40, classroom.StudentCount);
         }
-l
+
         [TestMethod]
         public void DeleteClassroom_ShouldDeleteClassroom()
         {

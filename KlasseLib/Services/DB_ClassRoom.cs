@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace KlasseLib.Services
-{l
+{
     public class ClassRoomDb : IClassRoom
     {
         private readonly string _connectionString = "Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;";

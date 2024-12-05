@@ -14,7 +14,7 @@ namespace KlasseWebService.Controllers
         {
             _classroomService = classroomService;
         }
-l
+
         [HttpGet]
         public IActionResult GetAllClassrooms()
         {
