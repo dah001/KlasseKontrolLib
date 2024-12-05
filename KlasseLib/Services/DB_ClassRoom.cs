@@ -67,9 +67,9 @@ namespace KlasseLib.Services
             using (var connection = new SqlConnection(_connectionString))
             {
                 const string query = @"
-                    INSERT INTO Classroom (TeacherName, StudentCount, SessionActive) 
-                    VALUES (@TeacherName, @StudentCount, @SessionActive);
-                    SELECT SCOPE_IDENTITY();";
+            INSERT INTO Classroom (TeacherName, StudentCount, SessionActive) 
+            VALUES (@TeacherName, @StudentCount, @SessionActive);
+            SELECT SCOPE_IDENTITY();";  // This returns the generated ClassID
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@TeacherName", classroom.TeacherName ?? (object)DBNull.Value);
@@ -77,11 +77,13 @@ namespace KlasseLib.Services
                     command.Parameters.AddWithValue("@SessionActive", classroom.SessionActive);
 
                     connection.Open();
-                    classroom.ClassID = Convert.ToInt32(command.ExecuteScalar());
+                    // Get the generated ClassID from the INSERT statement
+                    classroom.ClassID = Convert.ToInt32(command.ExecuteScalar()); // This retrieves the newly generated ClassID
                 }
             }
             return classroom;
         }
+
 
         public void Update(int id, Classroom classroom)
         {

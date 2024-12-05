@@ -10,7 +10,7 @@ namespace KlasseWebService.Model
         {
             if (sensorDTO == null)
             {
-                return null; // Return null if sensorDTO is null, or throw exception if needed
+                throw new ArgumentNullException(nameof(sensorDTO), "SensorDTO cannot be null");
             }
 
             // Validate that the sensor type is correct before creating the sensor
@@ -49,7 +49,7 @@ namespace KlasseWebService.Model
         {
             if (sensor == null)
             {
-                return null; // Return null if sensor is null, or throw exception if needed
+                throw new ArgumentNullException(nameof(sensor), "Sensor cannot be null");
             }
 
             // Map properties from Sensor to SensorDTO
