@@ -1,4 +1,6 @@
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
+
+// SensorDB.cs
 
 namespace KlasseLib.KlasseKontrolServices
 {
