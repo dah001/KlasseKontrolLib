@@ -1,98 +1,207 @@
-using KlasseLib.Services;
+using FruitClassLib;
+using FruitREST.Model;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using KlasseWebService.Model;
 
-namespace KlasseWebService.Controllers
+namespace FruitREST.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class ClassroomsController : ControllerBase
+    [ApiController]
+    [EnableCors]
+    public class FoodsController : ControllerBase
     {
-        private readonly IClassRoom _classroomService;
+        private IFoodDB _foodDB;
 
-        public ClassroomsController(IClassRoom classroomService)
+        public FoodsController(IFoodDB foodDB) 
         {
-            _classroomService = classroomService;
+            _foodDB = foodDB;
         }
-
-        [HttpGet]
-        public IActionResult GetAllClassrooms()
-        {
-            var classrooms = _classroomService.GetAll();
-            var classroomDtos = classrooms.Select(ClassRoomDTOConverter.Classroom2DTO).ToList();
-            return Ok(classroomDtos);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetClassroomById(int id)
+        [HttpGet("filtered")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Get([FromQuery] FoodFilterDTO filter)
         {
             try
             {
-                var classroom = _classroomService.GetById(id);
-                var classroomDto = ClassRoomDTOConverter.Classroom2DTO(classroom);
-                return Ok(classroomDto);
+                List<Food> foods = _foodDB.GetAllFiltered(filter.filterFruit, filter.filterVegetable, filter.filterName, offset: filter.offset, count: filter.count);
+                if (foods.Count == 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return Ok(foods);
+                }
             }
-            catch (KeyNotFoundException)
+            catch (Exception ex)
             {
-                return NotFound($"Classroom with ID {id} not found.");
+                return BadRequest(ex.Message);
             }
+        
+        }
+
+
+
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Get([FromQuery] FoodRangeDTO rangeDTO)
+        {
+            try
+            {
+                List<Food> foods = _foodDB.GetAll(offset: rangeDTO.offset, count: rangeDTO.count);
+                if (foods.Count == 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return Ok(foods);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+
+
+
+        [HttpGet("byName={name}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Get(string name)
+        {
+            try
+            {
+                Food food = _foodDB.FindByName(name);
+                return Ok(food);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        // POST api/<ReadingsController>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [EnableCors("PrivilegedPolicy")]
+
+        public IActionResult Post([FromBody] FoodDTO dto)
+        {
+            try
+            {
+                Food food = FoodDTOConverter.DTO2Food(dto);
+                Food response = _foodDB.Add(food);
+                return Created($"/api/Foods/{response.Id}", response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("Names")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetNames()
+        {
+            try
+            {
+                List<string> names = _foodDB.GetAllNames();
+                if (names.Count == 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return Ok(names);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+
+
+
+        [HttpGet("NamesFiltered")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetNames([FromQuery] FoodFilterDTO filter)
+        {
+            try
+            {
+                List<string> names = _foodDB.GetAllNames(filter.filterFruit, filter.filterVegetable);
+                if (names.Count == 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return Ok(names);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpDelete]
+        [Route("nuke")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [EnableCors("PrivilegedPolicy")]
+        public IActionResult Nuke()
+        {
+            if (TestMode.TestModeIsDev)
+            {
+                _foodDB.Nuke();
+                return Ok();
+            }
+            else
+            {
+                return StatusCode(401);
+            }
+
         }
 
         [HttpPost]
-        public IActionResult AddClassroom([FromBody] ClassRoomDTO classroomDto)
+        [Route("setup")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [EnableCors("PrivilegedPolicy")]
+        public IActionResult Setup()
         {
-            try
+            if (TestMode.TestModeIsDev)
             {
-                var classroom = ClassRoomDTOConverter.DTO2Classroom(classroomDto);
-                var addedClassroom = _classroomService.Add(classroom);
-                var addedClassroomDto = ClassRoomDTOConverter.Classroom2DTO(addedClassroom);
-                return CreatedAtAction(nameof(GetClassroomById), new { id = addedClassroomDto.ClassID }, addedClassroomDto);
+                _foodDB.Setup();
+                return Ok();
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateClassroom(int id, [FromBody] ClassRoomDTO classroomDto)
-        {
-            try
-            {
-                if (id != classroomDto.ClassID)
-                {
-                    return BadRequest("ID in URL and body do not match.");
-                }
-
-                var classroom = ClassRoomDTOConverter.DTO2Classroom(classroomDto);
-                _classroomService.Update(id, classroom);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound($"Classroom with ID {id} not found.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteClassroom(int id)
-        {
-            try
-            {
-                _classroomService.Delete(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound($"Classroom with ID {id} not found.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
+                return StatusCode(401);
             }
         }
     }
