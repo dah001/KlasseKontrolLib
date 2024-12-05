@@ -20,21 +20,33 @@ namespace KlasseLib.KlasseKontrolServices.Tests
             var soundValue = (double?)null;
             var lastMeasurement = DateTime.Now;
 
-            // Act
-            sensorDB.AddSensor(sensorType, temperatureValue, soundValue, lastMeasurement);
+            int initialCount;
 
-            // Assert: check the count of sensors in the database after adding the new one
+            // Act: Count sensors before adding the new one
             using (var connection = new SqlConnection("Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;"))
             {
-                const string query = "SELECT COUNT(*) FROM Sensors";
-
-                using (var command = new SqlCommand(query, connection))
+                const string countQuery = "SELECT COUNT(*) FROM Sensors";
+                using (var countCommand = new SqlCommand(countQuery, connection))
                 {
                     connection.Open();
-                    var count = (int)command.ExecuteScalar(); // Get the count of sensors in the database
+                    initialCount = (int)countCommand.ExecuteScalar(); // Get initial count
+                }
+            }
 
-                    // Assert that 1 sensor has been added to the database
-                    Assert.AreEqual(19, count, "Sensor was not added to the database.");
+            // Add the new sensor
+            sensorDB.AddSensor(sensorType, temperatureValue, soundValue, lastMeasurement);
+
+            // Assert: Check the count after adding the sensor
+            using (var connection = new SqlConnection("Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;"))
+            {
+                const string countQuery = "SELECT COUNT(*) FROM Sensors";
+                using (var countCommand = new SqlCommand(countQuery, connection))
+                {
+                    connection.Open();
+                    var finalCount = (int)countCommand.ExecuteScalar(); // Get count after adding
+
+                    // Assert that the count has increased by 1
+                    Assert.AreEqual(initialCount + 1, finalCount, "Sensor was not added to the database.");
                 }
             }
         }

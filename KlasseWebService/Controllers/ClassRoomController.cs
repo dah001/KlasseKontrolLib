@@ -95,5 +95,51 @@ namespace KlasseWebService.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("{id}/start-session")]
+        public IActionResult StartSession(int id, string teacherName, int studentCount)
+        {
+            if (string.IsNullOrWhiteSpace(teacherName))
+            {
+                return BadRequest("TeacherName cannot be empty or null.");
+            }
+
+            if (studentCount < 1)
+            {
+                return BadRequest("StudentCount must be greater than zero.");
+            }
+
+            try
+            {
+                _classroomService.StartSession(id, teacherName, studentCount);
+                return Ok(new { Message = "Session started successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+
+
+        [HttpPost("{id}/stop-session")]
+        public IActionResult StopSession(int id)
+        {
+            try
+            {
+                _classroomService.StopSession(id);
+                return Ok("Session stopped.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
+
+  
 }

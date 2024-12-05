@@ -1,129 +1,110 @@
-using System;
-using Moq;
-using System.Data.SqlClient;
-using KlasseLib.KlasseKontrolRepository;
-using KlasseLib.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using KlasseLib.Services;
+using KlasseLib;
 
 namespace KlasseTestProject.Services
 {
-     [TestClass]
+    [TestClass]
     public class DB_ClassRoomTest
     {
-        private Mock<IClassRoom> _mockClassRoom;
+        private ClassRoomDb _classRoomDb;
 
         [TestInitialize]
         public void SetUp()
         {
-            // Initialisering af mock objekt for IClassRoom interface
-            _mockClassRoom = new Mock<IClassRoom>();
+            // Initialize the ClassRoomDB instance before each test
+            _classRoomDb = new ClassRoomDb();
+        }
+
+        [TestMethod]
+        public void AddClassroom_ShouldAddNewClassroom()
+        {
+            var newClassroom = new Classroom
+            {
+                TeacherName = "Mr. Smith",
+                StudentCount = 25,
+                SessionActive = true
+            };
+
+            // Act: Add new classroom
+            var addedClassroom = _classRoomDb.Add(newClassroom);
+
+            // Assert: Check if classroom was added
+            Assert.IsTrue(addedClassroom.ClassID > 0, "Classroom should have a valid ClassID.");
+        }
+
+        [TestMethod]
+        public void UpdateClassroom_ShouldUpdateClassroomDetails()
+        {
+            int classID = 101;
+            var updatedClassroom = new Classroom
+            {
+                TeacherName = "Mr. Green",
+                StudentCount = 40,
+                SessionActive = true
+            };
+
+            // Act: Update classroom details
+            _classRoomDb.Update(classID, updatedClassroom);
+
+            // Assert: Verify the updated classroom details
+            var classroom = _classRoomDb.GetById(classID);
+            Assert.AreEqual("Mr. Green", classroom.TeacherName);
+            Assert.AreEqual(40, classroom.StudentCount);
+        }
+
+        [TestMethod]
+        public void DeleteClassroom_ShouldDeleteClassroom()
+        {
+            int classID = 101;
+
+            // Act: Delete the classroom
+            _classRoomDb.Delete(classID);
+
+            // Assert: Check if the classroom is deleted
+            var classroom = _classRoomDb.GetById(classID);
+            Assert.IsNull(classroom, "Classroom should be deleted.");
+        }
+
+        [TestMethod]
+        public void GetById_ShouldReturnClassroom()
+        {
+            int classID = 101;
+
+            // Act: Get the classroom by ID
+            var classroom = _classRoomDb.GetById(classID);
+
+            // Assert: Verify classroom details
+            Assert.IsNotNull(classroom);
+            Assert.AreEqual(classID, classroom.ClassID);
         }
 
         [TestMethod]
         public void StartSession_ShouldStartSession()
         {
-            // Arrange
             int classID = 101;
             string teacherName = "Mr. Jensen";
             int studentCount = 30;
 
-            // Opsæt mock for StartSession
-            _mockClassRoom.Setup(x => x.StartSession(classID, teacherName, studentCount))
-                         .Verifiable();
+            // Act: Start the session
+            _classRoomDb.StartSession(classID, teacherName, studentCount);
 
-            // Act
-            _mockClassRoom.Object.StartSession(classID, teacherName, studentCount);
-
-            // Assert
-            _mockClassRoom.Verify(x => x.StartSession(classID, teacherName, studentCount), Times.Once);
+            // Assert: Check if session is active
+            var classroom = _classRoomDb.GetById(classID);
+            Assert.IsTrue(classroom.SessionActive);
         }
 
         [TestMethod]
         public void StopSession_ShouldStopSession()
         {
-            // Arrange
             int classID = 101;
 
-            // Opsæt mock for StopSession
-            _mockClassRoom.Setup(x => x.StopSession(classID))
-                         .Verifiable();
+            // Act: Stop the session
+            _classRoomDb.StopSession(classID);
 
-            // Act
-            _mockClassRoom.Object.StopSession(classID);
-
-            // Assert
-            _mockClassRoom.Verify(x => x.StopSession(classID), Times.Once);
-        }
-
-        [TestMethod]
-        public void GetSessionData_ShouldReturnSessionDetails()
-        {
-            // Arrange
-            int classID = 101;
-
-            // Opsæt mock for GetSessionData
-            _mockClassRoom.Setup(x => x.GetSessionData(classID))
-                         .Verifiable();
-
-            // Act
-            _mockClassRoom.Object.GetSessionData(classID);
-
-            // Assert
-            _mockClassRoom.Verify(x => x.GetSessionData(classID), Times.Once);
-        }
-
-        [TestMethod]
-        public void UpdateSessionData_ShouldUpdateStudentCount()
-        {
-            // Arrange
-            int classID = 101;
-            int newStudentCount = 32;
-
-            // Opsæt mock for UpdateSessionData
-            _mockClassRoom.Setup(x => x.UpdateSessionData(classID, newStudentCount))
-                         .Verifiable();
-
-            // Act
-            _mockClassRoom.Object.UpdateSessionData(classID, newStudentCount);
-
-            // Assert
-            _mockClassRoom.Verify(x => x.UpdateSessionData(classID, newStudentCount), Times.Once);
-        }
-
-        [TestMethod]
-        public void DeleteClassroom_ShouldDeleteSession()
-        {
-            // Arrange
-            int classID = 101;
-
-            // Opsæt mock for DeleteClassroom
-            _mockClassRoom.Setup(x => x.DeleteClassroom(classID))
-                         .Verifiable();
-
-            // Act
-            _mockClassRoom.Object.DeleteClassroom(classID);
-
-            // Assert
-            _mockClassRoom.Verify(x => x.DeleteClassroom(classID), Times.Once);
-        }
-
-        [TestMethod]
-        public void StoreSessionInDatabase_ShouldStoreSessionData()
-        {
-            // Arrange
-            int classID = 101;
-            string teacherName = "Mr. Jensen";
-            int studentCount = 30;
-
-            // Opsæt mock for StoreSessionInDatabase
-            _mockClassRoom.Setup(x => x.StoreSessionInDatabase(classID, teacherName, studentCount))
-                         .Verifiable();
-
-            // Act
-            _mockClassRoom.Object.StoreSessionInDatabase(classID, teacherName, studentCount);
-
-            // Assert
-            _mockClassRoom.Verify(x => x.StoreSessionInDatabase(classID, teacherName, studentCount), Times.Once);
+            // Assert: Verify session is inactive
+            var classroom = _classRoomDb.GetById(classID);
+            Assert.IsFalse(classroom.SessionActive);
         }
     }
 }

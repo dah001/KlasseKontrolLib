@@ -1,22 +1,22 @@
-using KlasseLib.KlasseKontrolRepository;
+using KlasseLib.KlasseKontrolServices;
 using KlasseLib.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
-// Register DB_ClassRoom as a singleton service
-builder.Services.AddSingleton<IClassRoom, DB_ClassRoom>();
+// Register your services for dependency injection
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IClassRoom, ClassRoomDb>();
+builder.Services.AddScoped<ISensorDB, SensorDB>();      // If you have any other services
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -24,9 +24,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+
+public interface IWeatherService
+{
+}
