@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 namespace KlasseLib.Services
-{
+{l
     public interface IClassRoom
     {
         // Starter en session for et klasseværelse
