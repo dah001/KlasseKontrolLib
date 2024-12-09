@@ -4,7 +4,6 @@ namespace KlasseWebService.Model
 {
     public class SensorConverter
     {
-    
         // Convert SensorDTO to Sensor
         public static Sensor ConvertToSensor(SensorDTO sensorDTO)
         {
@@ -31,12 +30,12 @@ namespace KlasseWebService.Model
                 "Temperature" => new TemperatureSensor(
                     sensorDTO.Id, 
                     sensorDTO.SensorType, 
-                    sensorDTO.TemperatureValue ?? 0, 
+                    sensorDTO.TemperatureValue ?? 0, // Using TemperatureValue
                     sensorDTO.LastMeasurement),
                 "Sound" => new SoundSensor(
                     sensorDTO.Id, 
                     sensorDTO.SensorType, 
-                    sensorDTO.SoundValue ?? 0, 
+                    sensorDTO.SoundValue ?? 0, // Using SoundValue
                     sensorDTO.LastMeasurement),
                 _ => throw new InvalidOperationException("Unknown sensor type") // Handle any other unexpected sensor types
             };
@@ -63,11 +62,11 @@ namespace KlasseWebService.Model
             // Add specific values for Temperature or Sound sensor
             if (sensor is TemperatureSensor temperatureSensor)
             {
-                sensorDTO.TemperatureValue = temperatureSensor.CurrentValue;
+                sensorDTO.TemperatureValue = temperatureSensor.TemperatureValue; // Access TemperatureValue
             }
             else if (sensor is SoundSensor soundSensor)
             {
-                sensorDTO.SoundValue = soundSensor.CurrentValue;
+                sensorDTO.SoundValue = soundSensor.SoundValue; // Access SoundValue
             }
 
             return sensorDTO;

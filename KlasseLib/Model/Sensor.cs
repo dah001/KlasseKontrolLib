@@ -1,30 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KlasseLib
+﻿public abstract class Sensor
 {
-    public abstract class Sensor
+    public int Id { get; set; }
+    public string SensorType { get; set; }
+    public DateTime LastMeasurement { get; set; }
+
+    // Parameterløs konstruktor for JSON deserialisering
+    public Sensor() { }
+
+    // Også din eksisterende parameteriserede konstruktor
+    public Sensor(int id, string sensorType, DateTime lastMeasurement)
     {
-        public int Id { get; set; }
-        public string SensorType { get; set; }
-        public double CurrentValue { get; set; }
-        public DateTime LastMeasurement { get; set; }
-
-        public Sensor(int id, string sensorType, double currentValue, DateTime lastMeasurement)
-        {
-            Id = id;
-            SensorType = sensorType;
-            CurrentValue = currentValue;
-            LastMeasurement = lastMeasurement;
-        }
-
-        public override string ToString()
-        {
-            return $"{{{nameof(Id)}={Id.ToString()}, {nameof(SensorType)}={SensorType}, {nameof(CurrentValue)}={CurrentValue.ToString()}, {nameof(LastMeasurement)}={LastMeasurement.ToString()}}}";
-        }
+        Id = id;
+        SensorType = sensorType;
+        LastMeasurement = lastMeasurement;
     }
-  
+
+    public override string ToString()
+    {
+        return $"{nameof(Id)}: {Id}, {nameof(SensorType)}: {SensorType}, {nameof(LastMeasurement)}: {LastMeasurement}";
+    }
 }

@@ -25,7 +25,5 @@ namespace KlasseWebService.Model
                 classroom.SessionActive
             );
         }
-    }
-    
-    //a
+}
 }

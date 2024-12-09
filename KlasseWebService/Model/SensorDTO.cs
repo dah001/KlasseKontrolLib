@@ -7,4 +7,6 @@ public class SensorDTO
     public double? TemperatureValue { get; set; }
     public double? SoundValue { get; set; }
     public DateTime LastMeasurement { get; set; }
+    
+    
 }

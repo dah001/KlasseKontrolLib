@@ -1,11 +1,18 @@
 namespace KlasseLib;
 
-public class SoundSensor:Sensor 
+public class SoundSensor : Sensor
 {
-    // Constructor for TemperatureSensor
-    public SoundSensor(int id, string sensorType, double currentValue, DateTime lastMeasurement)
-        : base(id, sensorType, currentValue, lastMeasurement) // Call the base class constructor
+    public double SoundValue { get; set; }
+    public DateTime LastMeasurement { get; set; }
+
+    public SoundSensor(int id, string sensorType, double soundValue, DateTime lastMeasurement)
+        : base(id, sensorType, lastMeasurement)
     {
-        // You can add additional initialization specific to TemperatureSensor if needed
+        SoundValue = soundValue;
+    }
+
+    public override string ToString()
+    {
+        return $"{{{nameof(Id)}={Id.ToString()}, {nameof(SensorType)}={SensorType}, {nameof(SoundValue)}={SoundValue.ToString()}, {nameof(LastMeasurement)}={LastMeasurement.ToString()}}}";
     }
 }
