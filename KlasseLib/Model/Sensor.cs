@@ -1,20 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KlasseLib
 {
     public abstract class Sensor
     {
+        private double _currentValue;
+
         public int Id { get; set; }
+
         public string SensorType { get; set; }
-        public double CurrentValue { get; set; }
+        public double CurrentValue
+        {
+            get => _currentValue;
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(CurrentValue), "Value cannot be negative.");
+                }
+                _currentValue = value;
+            }
+        }
         public DateTime LastMeasurement { get; set; }
 
-        public Sensor(int id, string sensorType, double currentValue, DateTime lastMeasurement)
+        protected Sensor(int id, string sensorType, double currentValue, DateTime lastMeasurement)
         {
+            if (string.IsNullOrWhiteSpace(sensorType))
+            {
+                throw new ArgumentException("Sensor type cannot be null or empty.", nameof(sensorType));
+            }
+
             Id = id;
             SensorType = sensorType;
             CurrentValue = currentValue;
@@ -23,8 +38,7 @@ namespace KlasseLib
 
         public override string ToString()
         {
-            return $"{{{nameof(Id)}={Id.ToString()}, {nameof(SensorType)}={SensorType}, {nameof(CurrentValue)}={CurrentValue.ToString()}, {nameof(LastMeasurement)}={LastMeasurement.ToString()}}}";
+            return $"Sensor [Id={Id}, Type={SensorType}, Value={CurrentValue}, Time={LastMeasurement:yyyy-MM-dd HH:mm:ss}]";
         }
     }
-  
 }

@@ -1,123 +1,64 @@
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
-
-// SensorDB.cs
+using System.Threading.Tasks;
 
 namespace KlasseLib.KlasseKontrolServices
 {
-    public class SensorDB:ISensorDB
+    public class SensorDB : ISensorDB
     {
         private const string ConnectionString = "Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;";
 
-        // Add a sensor to the database
-        public void AddSensor(string sensorType, double? temperatureValue, double? soundValue, DateTime lastMeasurement)
+        public async Task<List<Sensor>> GetAllSensorsAsync()
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            var sensors = new List<Sensor>();
+
+            try
             {
-                const string query = @"
-                    INSERT INTO Sensors (SensorType, TemperatureValue, SoundValue, LastMeasurement)
-                    VALUES (@SensorType, @TemperatureValue, @SoundValue, @LastMeasurement)";
-
-                using (var command = new SqlCommand(query, connection))
+                using (var connection = new SqlConnection(ConnectionString))
                 {
-                    command.Parameters.AddWithValue("@SensorType", sensorType);
-                    command.Parameters.AddWithValue("@TemperatureValue", (object)temperatureValue ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@SoundValue", (object)soundValue ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@LastMeasurement", lastMeasurement);
+                    string query = @"
+                        SELECT Id, 'Sound' AS SensorType, CurrentValue, LastMeasurement FROM SoundSensor
+                        UNION ALL
+                        SELECT Id, 'Temperature' AS SensorType, CurrentValue, LastMeasurement FROM TemperatureSensor";
 
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+                    await connection.OpenAsync();
 
-            Console.WriteLine("Sensor added to the database.");
-        }
-
-        // Retrieve a sensor by ID from the database
-        public void GetSensorById(int id)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                const string query = "SELECT * FROM Sensors WHERE Id = @Id";
-
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
+                    using (var command = new SqlCommand(query, connection))
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
+                        while (await reader.ReadAsync())
                         {
-                            Console.WriteLine($"ID: {reader["Id"]}, Type: {reader["SensorType"]}, " +
-                                              $"Temperature: {reader["TemperatureValue"]}, Sound: {reader["SoundValue"]}, " +
-                                              $"LastMeasurement: {reader["LastMeasurement"]}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Sensor with ID {id} not found.");
+                            var sensorType = reader["SensorType"].ToString();
+                            if (sensorType == "Sound")
+                            {
+                                sensors.Add(new SoundSensor(
+                                    id: (int)reader["Id"],
+                                    sensorType: sensorType,
+                                    currentValue: (double)reader["CurrentValue"],
+                                    lastMeasurement: (DateTime)reader["LastMeasurement"]
+                                ));
+                            }
+                            else if (sensorType == "Temperature")
+                            {
+                                sensors.Add(new TemperatureSensor(
+                                    id: (int)reader["Id"],
+                                    sensorType: sensorType,
+                                    currentValue: (double)reader["CurrentValue"],
+                                    lastMeasurement: (DateTime)reader["LastMeasurement"]
+                                ));
+                            }
                         }
                     }
                 }
             }
-        }
-
-        // Update a sensor's values and last measurement in the database
-        public void UpdateSensor(int id, double? newTemperatureValue, double? newSoundValue)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
+            catch (Exception ex)
             {
-                const string query = @"
-                    UPDATE Sensors
-                    SET TemperatureValue = @TemperatureValue, SoundValue = @SoundValue, LastMeasurement = @LastMeasurement
-                    WHERE Id = @Id";
-
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@TemperatureValue", (object)newTemperatureValue ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@SoundValue", (object)newSoundValue ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@LastMeasurement", DateTime.Now);
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        Console.WriteLine($"Sensor with ID {id} updated successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Sensor with ID {id} not found.");
-                    }
-                }
+                Console.WriteLine($"Error in GetAllSensorsAsync: {ex.Message}");
+                throw;
             }
-        }
 
-        // Delete a sensor by ID from the database
-        public void DeleteSensor(int id)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                const string query = "DELETE FROM Sensors WHERE Id = @Id";
-
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        Console.WriteLine($"Sensor with ID {id} deleted successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Sensor with ID {id} not found.");
-                    }
-                }
-            }
+            return sensors;
         }
     }
 }
