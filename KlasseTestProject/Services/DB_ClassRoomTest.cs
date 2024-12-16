@@ -4,11 +4,17 @@ using KlasseLib;
 
 namespace KlasseTestProject.Services
 {
+    /// <summary>
+    /// Testklasse for ClassRoomDb service.
+    /// </summary>
     [TestClass]
     public class DB_ClassRoomTest
     {
         private ClassRoomDb _classRoomDb;
 
+        /// <summary>
+        /// Initialiserer ClassRoomDb før hver test.
+        /// </summary>
         [TestInitialize]
         public void SetUp()
         {
@@ -16,6 +22,9 @@ namespace KlasseTestProject.Services
             _classRoomDb = new ClassRoomDb();
         }
 
+        /// <summary>
+        /// Tester om en ny klasseværelse kan tilføjes.
+        /// </summary>
         [TestMethod]
         public void AddClassroom_ShouldAddNewClassroom()
         {
@@ -33,6 +42,9 @@ namespace KlasseTestProject.Services
             Assert.IsTrue(addedClassroom.ClassID > 0, "Classroom should have a valid ClassID.");
         }
 
+        /// <summary>
+        /// Tester om klasseværelsesdetaljer kan opdateres.
+        /// </summary>
         [TestMethod]
         public void UpdateClassroom_ShouldUpdateClassroomDetails()
         {
@@ -53,6 +65,9 @@ namespace KlasseTestProject.Services
             Assert.AreEqual(40, classroom.StudentCount);
         }
 
+        /// <summary>
+        /// Tester om et klasseværelse kan slettes.
+        /// </summary>
         [TestMethod]
         public void DeleteClassroom_ShouldDeleteClassroom()
         {
@@ -66,6 +81,9 @@ namespace KlasseTestProject.Services
             Assert.IsNull(classroom, "Classroom should be deleted.");
         }
 
+        /// <summary>
+        /// Tester om et klasseværelse kan hentes ved ID.
+        /// </summary>
         [TestMethod]
         public void GetById_ShouldReturnClassroom()
         {
@@ -79,6 +97,9 @@ namespace KlasseTestProject.Services
             Assert.AreEqual(classID, classroom.ClassID);
         }
 
+        /// <summary>
+        /// Tester om en session kan startes.
+        /// </summary>
         [TestMethod]
         public void StartSession_ShouldStartSession()
         {
@@ -94,6 +115,9 @@ namespace KlasseTestProject.Services
             Assert.IsTrue(classroom.SessionActive);
         }
 
+        /// <summary>
+        /// Tester om en session kan stoppes.
+        /// </summary>
         [TestMethod]
         public void StopSession_ShouldStopSession()
         {

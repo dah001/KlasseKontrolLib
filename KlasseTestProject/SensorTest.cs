@@ -2,11 +2,15 @@ using KlasseLib;
 
 namespace KlasseTestProject
 {
-
+    /// <summary>
+    /// Testklasse for sensorer, der inkluderer Temperature og Sound sensorer.
+    /// </summary>
     [TestClass]
     public class SensorTest
     {
-        // Test method for the Temperature sensor
+        /// <summary>
+        /// Tester om TemperatureSensor konstruktøren sætter værdier korrekt.
+        /// </summary>
         [TestMethod]
         public void Constructor_ShouldSetTemperatureValuesCorrectly()
         {
@@ -27,7 +31,9 @@ namespace KlasseTestProject
             Assert.AreEqual(expectedLastMeasurement, sensor.LastMeasurement);
         }
 
-        // Test method for the Sound sensor
+        /// <summary>
+        /// Tester om SoundSensor konstruktøren sætter værdier korrekt.
+        /// </summary>
         [TestMethod]
         public void Constructor_ShouldSetSoundValuesCorrectly()
         {
@@ -48,19 +54,25 @@ namespace KlasseTestProject
         }
     }
 
+    /// <summary>
+    /// Testklasse for MotionSensor, der tester sensorer til bevægelse.
+    /// </summary>
     [TestClass]
     public class MotionSensorTest
     {
+        /// <summary>
+        /// Tester om MotionSensor konstruktøren sætter værdier korrekt.
+        /// </summary>
         [TestMethod]
         public void Constructor_Shouldgetstudentcount()
         {
-            //Arrange
+            // Arrange
             var expectedId = 2;
             var expectedSensorType = "motion";
             var expectedCurrentValue = 0.0;
             var expectedLastMeasurement = DateTime.Now;
 
-            //Act
+            // Act
             var sensor = new MotionSensor(expectedId, expectedSensorType, expectedCurrentValue,
                 expectedLastMeasurement);
 

@@ -4,10 +4,16 @@ using System.Data.SqlClient;
 
 namespace KlasseLib.Services
 {
+    /// <summary>
+    /// Håndterer databaseoperationer for klasseværelser.
+    /// </summary>
     public class ClassRoomDb : IClassRoom
     {
         private readonly string _connectionString = "Data Source=mssql17.unoeuro.com;Initial Catalog=kunforhustlers_dk_db_test;User ID=kunforhustlers_dk;Password=RmcAfptngeBaxkw6zr5E;";
 
+        /// <summary>
+        /// Henter alle klasseværelser fra databasen.
+        /// </summary>
         public List<Classroom> GetAll()
         {
             var classrooms = new List<Classroom>();
@@ -35,6 +41,10 @@ namespace KlasseLib.Services
             return classrooms;
         }
 
+        /// <summary>
+        /// Henter et specifikt klasseværelse baseret på ID.
+        /// </summary>
+        /// <param name="id">ID på klasseværelset.</param>
         public Classroom GetById(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -62,6 +72,10 @@ namespace KlasseLib.Services
             throw new KeyNotFoundException($"Classroom with ID {id} not found.");
         }
 
+        /// <summary>
+        /// Tilføjer et nyt klasseværelse til databasen.
+        /// </summary>
+        /// <param name="classroom">Klasseværelse der skal tilføjes.</param>
         public Classroom Add(Classroom classroom)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -83,6 +97,11 @@ namespace KlasseLib.Services
             return classroom;
         }
 
+        /// <summary>
+        /// Opdaterer et eksisterende klasseværelse i databasen.
+        /// </summary>
+        /// <param name="id">ID på klasseværelset der skal opdateres.</param>
+        /// <param name="classroom">De nye data til klasseværelset.</param>
         public void Update(int id, Classroom classroom)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -108,6 +127,10 @@ namespace KlasseLib.Services
             }
         }
 
+        /// <summary>
+        /// Sletter et klasseværelse fra databasen.
+        /// </summary>
+        /// <param name="classID">ID på klasseværelset der skal slettes.</param>
         public void Delete(int classID)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -127,6 +150,12 @@ namespace KlasseLib.Services
             }
         }
 
+        /// <summary>
+        /// Starter en session for et specifikt klasseværelse.
+        /// </summary>
+        /// <param name="classID">ID på klasseværelset.</param>
+        /// <param name="teacherName">Lærerens navn.</param>
+        /// <param name="studentCount">Antal studerende.</param>
         public void StartSession(int classID, string teacherName, int studentCount)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -152,6 +181,10 @@ namespace KlasseLib.Services
             }
         }
 
+        /// <summary>
+        /// Stopper en session for et specifikt klasseværelse.
+        /// </summary>
+        /// <param name="classID">ID på klasseværelset.</param>
         public void StopSession(int classID)
         {
             using (var connection = new SqlConnection(_connectionString))
